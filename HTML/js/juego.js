@@ -1,18 +1,9 @@
-var vida = 100;
-var ataque = 10;
-var pocion = 20;
+var configTeclado = {prevent_repeat : true};
 
-function muestraVida(){
-  console.log("Nivel de vida del Héroe")
-  console.log(vida);
+var eventoTeclado = new window.keypress.Listener(this,configTeclado);
+
+function pulsaA(){
+  console.log('Has pulsado a');
 }
 
-function ataqueEnemigo(){
-  vida -= ataque;
-  muestraVida();
-}
-
-function bebePocion(){
-  vida += pocion;
-  muestraVida();
-}
+eventoTeclado.simple_combo('a',pulsaA);
