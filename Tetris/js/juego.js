@@ -10,7 +10,10 @@ var anchoCanvas = 400;
 var altoCanvas = 640;
 
 var anchoTablero = 10;
-var altoTablero = 16;
+var altoTablero = 20;
+
+var margenSuperior = 4;
+var margenLateral = 1;
 
 var anchoF = 40;
 var altoF = 40;
@@ -33,8 +36,50 @@ var tablero = [
     [1,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1,1,1]
 ];
+
+function dibujarTablero(){
+  for(py=margenSuperior;py<altoTablero;py++){
+    for(px=margenLateral;px<anchoTablero;px++){
+
+      if(tablero[py][px]!=0){
+
+        if(tablero[py][px]==1)
+          ctx.fillStyle=rojo;
+        if(tablero[py][px]==2)
+          ctx.fillStyle=morado;
+        if(tablero[py][px]==3)
+          ctx.fillStyle=naranja;
+        if(tablero[py][px]==4)
+          ctx.fillStyle=amarillo;
+        if(tablero[py][px]==5)
+          ctx.fillStyle=verde;
+        if(tablero[py][px]==6)
+          ctx.fillStyle=cyan;
+        if(tablero[py][px]==7)
+          ctx.fillStyle=azul;
+
+        ctx.fillRect((px-margenLateral)*anchoF,(py-margenSuperior)*altoF,anchoF,altoF);
+      }
+
+    }
+  }
+
+}
+
+//COLORES DE PIEZAS
+var rojo = '#FF0000';
+var morado = "#800080";
+var naranja = "#FF8C00";
+var amarillo = "#FFD700";
+var verde = "#008000";
+var cyan = "#00CED1";
+var azul = "#0000CD";
 
 var fichaGrafico= [
   [
@@ -260,16 +305,32 @@ var ObjPieza = function(){
   this.y = 7;
 
   this.angulo = 0;
-  this.tipo = 1;
+  this.tipo = 6;
 
   this.dibujar = function(){
     for(py=0;py<4;py++){
       for(px=0;px<4;px++){
 
         if(fichaGrafico[this.tipo][this.angulo][py][px]!=0){
-          ctx.fillStyle = '#014202';
-          ctx.fillRect((this.x+px)*anchoF,(this.y+py)*altoF,anchoF,altoF);
+
+          if(fichaGrafico[this.tipo][this.angulo][py][px]==1)
+  					ctx.fillStyle=rojo;
+  				if(fichaGrafico[this.tipo][this.angulo][py][px]==2)
+  					ctx.fillStyle=morado;
+  				if(fichaGrafico[this.tipo][this.angulo][py][px]==3)
+  					ctx.fillStyle=naranja;
+  				if(fichaGrafico[this.tipo][this.angulo][py][px]==4)
+  					ctx.fillStyle=amarillo;
+  				if(fichaGrafico[this.tipo][this.angulo][py][px]==5)
+  					ctx.fillStyle=verde;
+  				if(fichaGrafico[this.tipo][this.angulo][py][px]==6)
+  					ctx.fillStyle=cyan;
+  				if(fichaGrafico[this.tipo][this.angulo][py][px]==7)
+  					ctx.fillStyle=azul;
+
+          ctx.fillRect((this.x + px)*anchoF,(this.y + py)*altoF,anchoF,altoF);
         }
+
       }
     }
   };
@@ -325,11 +386,12 @@ function inicializar(){
 }
 
 function borrarCanvas(){
-  canvas.style.width = anchoCanvas;
-  canvas.style.height = altoCanvas;
+  canvas.width = anchoCanvas;
+  canvas.height = altoCanvas;
 }
 
 function principal(){
   borrarCanvas();
+  dibujarTablero();
   pieza.dibujar();
 }
