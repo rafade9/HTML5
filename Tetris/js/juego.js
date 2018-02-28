@@ -1,5 +1,5 @@
 //keypress
-var configTeclado = {prevent_repeat : true};
+var configTeclado = {prevent_repeat : false};
 var eventoTeclado = new window.keypress.Listener(this,configTeclado);
 
 var canvas;
@@ -43,9 +43,33 @@ var tablero = [
     [1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
+var tableroCopia = [
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1]
+];
+
 function dibujarTablero(){
   for(py=margenSuperior;py<altoTablero;py++){
-    for(px=margenLateral;px<anchoTablero;px++){
+    for(px=margenLateral;px<anchoTablero+1;px++){
 
       if(tablero[py][px]!=0){
 
@@ -70,6 +94,15 @@ function dibujarTablero(){
     }
   }
 
+}
+
+function reseteaTablero(){
+  console.log("perdiste");
+  for(py=0;py<21;py++){
+    for(px=0;px<12;px++){
+      tablero[py][px]=tableroCopia[py][px];
+    }
+  }
 }
 
 //COLORES DE PIEZAS
@@ -301,11 +334,20 @@ var fichaGrafico= [
 var pieza;
 
 var ObjPieza = function(){
-  this.x = 5;
-  this.y = 7;
+  this.x = 0;
+  this.y = 0;
 
   this.angulo = 0;
-  this.tipo = 6;
+  this.tipo = 0;
+
+  this.retraso = 50;
+  this.fotograma = 0;
+
+  this.nueva = function(){
+    this.tipo = Math.floor(Math.random()*7);
+    this.y = 0;
+    this.x = 4;
+  }
 
   this.dibujar = function(){
     for(py=0;py<4;py++){
@@ -328,28 +370,132 @@ var ObjPieza = function(){
   				if(fichaGrafico[this.tipo][this.angulo][py][px]==7)
   					ctx.fillStyle=azul;
 
-          ctx.fillRect((this.x + px)*anchoF,(this.y + py)*altoF,anchoF,altoF);
+          ctx.fillRect((this.x + px - margenLateral)*anchoF,(this.y + py - margenSuperior)*altoF,anchoF,altoF);
         }
 
       }
     }
   };
 
+  this.compruebaSiPierde = function(){
+    var pierde = false;
+
+    for(px=1;px<anchoTablero+1;px++){
+      if(tablero[2][px]>0){
+        pierde = true;
+      }
+    }
+
+    return pierde;
+  }
+
+  this.limpia = function(){
+    var filaCompleta = true;
+
+    for(py = margenSuperior; py < altoTablero; py++){
+      filaCompleta = true;
+
+      for(px = 1; px < anchoTablero + 1; px++){
+        if(tablero[py][px]==0){
+          filaCompleta = false;
+        }
+      }
+
+      if(filaCompleta == true){
+          for(px = 1; px < anchoTablero + 1; px++){
+            tablero[py][px]=0;
+          }
+      }
+
+    }
+  }
+
+  this.caer = function(){
+    if(this.fotograma < this.retraso){
+      this.fotograma++;
+    }
+    else{
+      if(this.colision(this.angulo,this.y+1,this.x)==false){
+        this.y++;
+        this.fotograma = 0;
+      }
+
+      else{
+        this.fijar();
+        this.limpia();
+        this.nueva();
+
+        if(this.compruebaSiPierde()==true){
+          reseteaTablero();
+        }
+      }
+    }
+  }
+
+  this.fijar = function(){
+    for(py=0;py<4;py++){
+      for(px=0;px<4;px++){
+        if(fichaGrafico[this.tipo][this.angulo][py][px]>0){
+          tablero[this.y+py][this.x+px] = fichaGrafico[this.tipo][this.angulo][py][px];
+        }
+      }
+    }
+  }
+
+  this.colision = function(anguloNuevo, yNueva, xNueva){
+    var resultado = false;
+
+    for(py=0;py<4;py++){
+      for(px=0;px<4;px++){
+        if(fichaGrafico[this.tipo][anguloNuevo][py][px]>0){
+          if(tablero[yNueva+py][xNueva+px]>0){
+            resultado = true;
+          }
+        }
+      }
+    }
+
+    return resultado;
+  }
+
   this.rotar = function(){
     console.log("Rotar");
+
+    var anguloNuevo = this.angulo;
+
+    if(anguloNuevo < 3){
+      anguloNuevo++;
+    }
+    else{
+      anguloNuevo = 0;
+    }
+
+    if(this.colision(anguloNuevo,this.y,this.x)==false){
+      this.angulo = anguloNuevo;
+    }
   }
 
   this.abajo = function(){
-    console.log("abajo");
+
+    if(this.colision(this.angulo,this.y+1,this.x)==false){
+        this.y++;
+    }
+
   }
 
   this.izquierda = function(){
-    console.log("izquierda");
+    if(this.colision(this.angulo,this.y,this.x-1)==false){
+      this.x--;
+    }
   }
 
   this.derecha = function(){
-    console.log("derecha");
+    if(this.colision(this.angulo,this.y,this.x+1)==false){
+      this.x++;
+    }
   }
+
+  this.nueva();
 
 }
 
@@ -393,5 +539,6 @@ function borrarCanvas(){
 function principal(){
   borrarCanvas();
   dibujarTablero();
+  pieza.caer();
   pieza.dibujar();
 }
