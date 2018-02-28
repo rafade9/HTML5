@@ -392,7 +392,7 @@ var ObjPieza = function(){
   this.limpia = function(){
     var filaCompleta = true;
 
-    for(py = margenSuperior; py < altoTablero; py++){
+    /*for(py = margenSuperior; py < altoTablero; py++){
       filaCompleta = true;
 
       for(px = 1; px < anchoTablero + 1; px++){
@@ -403,11 +403,44 @@ var ObjPieza = function(){
 
       if(filaCompleta == true){
           for(px = 1; px < anchoTablero + 1; px++){
-            tablero[py][px]=0;
+            tablero[py][px]=tablero[py-1][px];
           }
       }
 
+    }*/
+    var filas = [];
+
+    for(py = altoTablero - 1; py > margenSuperior; py--){
+
+      for(px = margenLateral; px < anchoTablero; px++){
+        if(tablero[py][px]==0){
+          filaCompleta = false;
+        }
+      }
+      if(filaCompleta == true){
+        console.log("fila completa " + py);
+        filas.push(py)
+      }
+
+      filaCompleta = true;
     }
+
+    for(f = 0; f < filas.length ; f++){
+      console.log("Ciclo " + f);
+      for(py = filas[f]; py > margenSuperior; py --){
+        for(px = margenLateral; px < anchoTablero + 1; px++){
+          tablero[py][px] = tablero[py-1][px];
+        }
+      }
+    }
+
+    for(px = margenLateral; px < anchoTablero + 1; px++){
+      console.log("FILA:"+filas[0]+" ->PA: " + tablero[19][px] + "---PN: " + tablero[19-1][px]);
+    }
+
+    filas = [];
+    //console.log("filas post limpieza "+filas.length);
+
   }
 
   this.caer = function(){
