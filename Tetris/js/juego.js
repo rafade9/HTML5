@@ -93,7 +93,6 @@ function dibujarTablero(){
 
     }
   }
-
 }
 
 function reseteaTablero(){
@@ -425,6 +424,11 @@ var ObjPieza = function(){
       filaCompleta = true;
     }
 
+    for(px = margenLateral; px < anchoTablero + 1; px++){
+      var yTemp = 17;
+      console.log("FILA:"+filas[0]+" ->PA: " + tablero[yTemp][px] + "---PN: " + tablero[yTemp-1][px]);
+    }
+
     for(f = 0; f < filas.length ; f++){
       console.log("Ciclo " + f);
       for(py = filas[f]; py > margenSuperior; py --){
@@ -434,13 +438,8 @@ var ObjPieza = function(){
       }
     }
 
-    for(px = margenLateral; px < anchoTablero + 1; px++){
-      console.log("FILA:"+filas[0]+" ->PA: " + tablero[19][px] + "---PN: " + tablero[19-1][px]);
-    }
-
     filas = [];
     //console.log("filas post limpieza "+filas.length);
-
   }
 
   this.caer = function(){
@@ -509,11 +508,9 @@ var ObjPieza = function(){
   }
 
   this.abajo = function(){
-
     if(this.colision(this.angulo,this.y+1,this.x)==false){
         this.y++;
     }
-
   }
 
   this.izquierda = function(){
@@ -527,9 +524,7 @@ var ObjPieza = function(){
       this.x++;
     }
   }
-
   this.nueva();
-
 }
 
 //Lectura del teclado keypress

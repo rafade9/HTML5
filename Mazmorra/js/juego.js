@@ -19,6 +19,31 @@ var puerta = '#0223f7'
 var tileMap;
 var tilePx = 32;
 
+//audio
+var musica;
+var sonido1, sonido2, sonido3;
+
+musica = new Howl({
+  src:['music/fortaleza.mp3'],
+  loop:true
+});
+
+sonido1 = new Howl({
+  src:['sound/fuego.wav'],
+  loop:false
+});
+
+sonido2 = new Howl({
+  src:['sound/llave.wav'],
+  loop:false
+});
+
+sonido3 = new Howl({
+  src:['sound/puerta.wav'],
+  loop:false
+});
+
+
 var escenario = [
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,2,2,2,2,0,0,2,2,2,0,2,2,2,0],
@@ -48,6 +73,7 @@ var Jugador = function(){
 
   this.victoria = function(){
     console.log('Has ganado');
+    sonido3.play();
     this.x=1;
     this.y=1;
     this.llave = false;
@@ -55,6 +81,7 @@ var Jugador = function(){
   }
 
   this.muerte = function(){
+    sonido1.play();
     console.log('Has muerto');
     this.x=1;
     this.y=1;
@@ -197,6 +224,8 @@ function inicializar(){
   tileMap = new Image();
   tileMap.src = 'img/tilemap.png';
 
+  musica.play();
+
   //CREAR PROTAGONISTA
   protagonista = new Jugador();
 
@@ -279,6 +308,7 @@ function interaccionObjetos(){
   //llave
   if(objeto == 3){
     protagonista.llave = true;
+    sonido2.play();
     console.log('Has recogido la llave');
     escenario[protagonista.y][protagonista.x] = 2;
   }
