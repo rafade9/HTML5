@@ -91,7 +91,7 @@ var Jugador = function(){
 
     //derecha
     if(this.x == 4){
-      this.x = parseInt((this.x/anchoF)+1)*anchoF;
+      this.x = parseInt((this.x/anchoF))*anchoF;
     }
 
 
@@ -132,7 +132,7 @@ var Jugador = function(){
 
     //colision techo
     if(this.vy < 0){
-      if((this.colision(this.x, this.y) == true) || (this.colision(this.x + anchoF, this.y) == true)){
+      if((this.colision(this.x + 1, this.y) == true) || (this.colision(this.x + anchoF - 1, this.y) == true)){
         this.vy = 0;
         this.correccion(2);
       }
@@ -140,7 +140,7 @@ var Jugador = function(){
 
     //colision suelo
     if(this.vy >= 0){
-      if((this.colision(this.x, this.y + altoF) == true) || (this.colision(this.x + anchoF, this.y + altoF) == true)){
+      if((this.colision(this.x + 1, this.y + altoF) == true) || (this.colision(this.x + anchoF - 1, this.y + altoF) == true)){
         this.suelo = true;
         this.vy = 0;
         this.correccion(1);
@@ -150,15 +150,26 @@ var Jugador = function(){
       }
     }
 
+    //colision derecha
     if(this.vx > 0){
       if((this.colision(this.x + anchoF + this.vx, this.y + 1)==true) || (this.colision(this.x + anchoF + this.vx, this.y + altoF - 1)==true)){
 
         if(this.x != parseInt(this.x/anchoF)*anchoF){
-          this.correccion(4)
-
+          this.correccion(4);
         }
         this.vx = 0;
 
+      }
+    }
+
+    //colision izquierda
+    if(this.vx < 0){
+      if((this.colision(this.x + this.vx, this.y + 1)==true) || (this.colision(this.x - this.vx, this.y + altoF - 1)==true)){
+
+        if(this.x != parseInt(this.x/anchoF)*anchoF){
+          this.correccion(3);
+        }
+        this.vx = 0;
       }
     }
 
